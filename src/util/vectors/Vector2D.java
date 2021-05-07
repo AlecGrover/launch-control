@@ -1,5 +1,12 @@
 package util.vectors;
 
+/*
+* Not too much to explain here, the PVectors weren't exactly
+* what I wanted so I just made my own library. The overlap is
+* significant, but now I'm using my own notation. I had enough
+* Vectors that it was just easier to do this for my own comfort.
+* */
+
 public class Vector2D {
 
     public float x, y;

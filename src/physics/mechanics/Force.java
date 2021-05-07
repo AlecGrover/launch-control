@@ -3,6 +3,12 @@ package physics.mechanics;
 import physics.intefaces.IPhysicsObject;
 import util.vectors.Vector2D;
 
+/*
+* Force takes an input PhysicsObject and returns an acceleration
+* vector in the cached direction of a magnitude proportional to
+* the Force's quantity and the object's mass.
+* */
+
 public class Force {
     protected float quantity;
     protected Vector2D direction;

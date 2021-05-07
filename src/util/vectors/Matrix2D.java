@@ -1,5 +1,13 @@
 package util.vectors;
 
+/*
+* 2D Matrix extension for the 2D Vector library I made
+*
+* The Matrix version isn't actively used by anything at
+* the moment but will be used extensively for collision
+* detection if I decide to expand this project later.
+* */
+
 public class Matrix2D {
 
     public float[][] matrix = new float[2][2];

@@ -2,7 +2,7 @@ package objects;
 
 import display.drawables.IDrawable;
 import display.drawables.RocketDrawable;
-import physics.intefaces.IPhysicsObject;
+import display.drawables.RocketUnderThrust;
 import util.vectors.Vector2D;
 
 import javax.swing.*;
@@ -16,12 +16,25 @@ import static physics.constants.Constants.EARTH_RADIUS;
 import static util.constants.actions.Actions.*;
 import static util.constants.timer.TimerConstants.DELTA_TIME;
 
+/*
+* The rocket is the only DynamicPhysicsObject in the current implementation
+* and is the only object directly manipulable by the user.
+*
+* The rocket is one of the primary classes, but due to encapsulation the
+* direct functionalities of this class are fairly simple.
+*
+* Rocket contains a method to bind the control map to the correct keys,
+* the draw method required by its interface, some query functions
+* regarding its fuel status, some overrides for its physics content,
+* and an update function.
+* */
+
 public class Rocket extends DynamicPhysicsObject implements IDrawable {
 
     private final Thruster thruster = new Thruster(ROCKET_THRUST, this);
     private final Vector2D position;
     private static final Earth earth = new Earth() {};
-    private final RocketDrawable sprite = new RocketDrawable();
+    private RocketDrawable sprite = new RocketDrawable();
     private final float mass = 100;
 
     public Rocket() {
@@ -30,11 +43,23 @@ public class Rocket extends DynamicPhysicsObject implements IDrawable {
         forces.add(earth.getGravity());
     }
 
+    public boolean isEmpty() {
+        return thruster.isEmpty();
+    }
+
+    public int getFuel() {
+        return thruster.getFuel();
+    }
+
+    // Binds the keymaps for the left/right arrow keys and space
+    // to the corresponding actions. These actions control rotation
+    // and thrust, and assign the correct RocketDrawable to drawable.
     public void setMaps(ActionMap actionMap, InputMap inputMap) {
 
         Action enableThrustAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sprite = new RocketUnderThrust();
                 thruster.setThrust(true);
             }
         };
@@ -43,6 +68,7 @@ public class Rocket extends DynamicPhysicsObject implements IDrawable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                sprite = new RocketDrawable();
                 thruster.setThrust(false);
             }
         };
@@ -75,6 +101,10 @@ public class Rocket extends DynamicPhysicsObject implements IDrawable {
 
     }
 
+    // Utilizes the base update method to get the velocity change
+    // and updates the position with it. Then determines if the rocket
+    // is being pulled under the earth's surface. If so, normal force is
+    // added, if not, normal force is removed.
     @Override
     public void update() {
         super.update();
@@ -86,7 +116,7 @@ public class Rocket extends DynamicPhysicsObject implements IDrawable {
             forces.remove(earth.getNormalForce());
         }
 
-        System.out.printf("Rocket Velocity [%f, %f] with magnitude %f\n", velocity.x, velocity.y, velocity.getMagnitude());
+        // System.out.printf("Rocket Velocity [%f, %f] with magnitude %f\n", velocity.x, velocity.y, velocity.getMagnitude());
 
         // System.out.printf("Current Rocket Position: [%f, %f]\n", position.x,position.y);
     }
@@ -102,7 +132,10 @@ public class Rocket extends DynamicPhysicsObject implements IDrawable {
         AffineTransform transform = g2.getTransform();
         g2.translate(position.x, position.y);
         sprite.setRotation(direction);
+        Stroke old = g2.getStroke();
+        g2.setStroke(new BasicStroke(4));
         sprite.draw(g2);
+        g2.setStroke(old);
         g2.setTransform(transform);
     }
 

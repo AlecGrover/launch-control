@@ -3,7 +3,11 @@ package physics.intefaces;
 import physics.mechanics.Force;
 import util.vectors.Vector2D;
 
+/*
+* The basic physics object interface
+* */
+
 public interface IPhysicsObject {
-    public float getMass();
-    public Vector2D getPosition();
+    float getMass();
+    Vector2D getPosition();
 }
